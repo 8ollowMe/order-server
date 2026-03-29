@@ -8,5 +8,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class OrderInternalController {
 
-    private final OrderService orderService;
+  private final OrderService orderService;
 }
