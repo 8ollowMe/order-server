@@ -1,4 +1,4 @@
-package com.followMe.order_server.order.infrastructure;
+package com.followMe.order_server.order.infrastructure.client.repository;
 
 import com.followMe.order_server.order.domain.Order;
 import java.util.UUID;

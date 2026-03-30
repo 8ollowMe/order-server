@@ -1,14 +1,18 @@
 package com.followMe.order_server.order.domain;
 
 import com.followMe.common.entity.BaseAudit;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,48 +21,85 @@ import lombok.NoArgsConstructor;
 @Table(name = "p_order")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
 public class Order extends BaseAudit {
 
   @Id
   @Column(name = "order_id")
   private UUID orderId;
 
-  @Column(name = "delivery_info_id", nullable = false)
-  private UUID deliveryInfoId;
+  @Column(name = "delivery_id")
+  private UUID deliveryId;
 
-  @Column(name = "product_id", nullable = false)
-  private UUID productId;
+  @Embedded private ProductInfo productInfo;
 
-  @Column(name = "product_name", nullable = false, length = 255)
-  private String productName;
+  @Embedded
+  @AttributeOverrides({
+    @AttributeOverride(name = "vendorId", column = @Column(name = "request_vendor_id")),
+    @AttributeOverride(name = "vendorName", column = @Column(name = "request_vendor_name"))
+  })
+  private VendorInfo requestVendor;
 
-  @Column(name = "request_vendor_id", nullable = false)
-  private UUID requestVendorId;
-
-  @Column(name = "request_vendor_name", nullable = false, length = 255)
-  private String requestVendorName;
-
-  @Column(name = "receiver_vendor_id", nullable = false)
-  private UUID receiverVendorId;
-
-  @Column(name = "receiver_vendor_name", nullable = false, length = 255)
-  private String receiverVendorName;
-
-  @Column(name = "quantity", nullable = false)
-  private Integer quantity;
+  @Embedded
+  @AttributeOverrides({
+    @AttributeOverride(name = "vendorId", column = @Column(name = "receiver_vendor_id")),
+    @AttributeOverride(name = "vendorName", column = @Column(name = "receiver_vendor_name"))
+  })
+  private VendorInfo receiverVendor;
 
   @Column(name = "request_note", columnDefinition = "TEXT")
   private String requestNote;
 
-  //    @Enumerated(EnumType.STRING)
-  //    @Column(name = "status", nullable = false)
-  //    private OrderStatus status;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status", nullable = false)
+  private OrderState status;
 
   @Column(name = "cancelled_at")
   private LocalDateTime cancelledAt;
 
   @Column(name = "cancelled_by")
   private UUID cancelledBy;
+
+  @Builder
+  private Order(
+      UUID orderId,
+      UUID deliveryId,
+      ProductInfo productInfo,
+      VendorInfo requestVendor,
+      VendorInfo receiverVendor,
+      String requestNote,
+      OrderState status) {
+
+    this.orderId = orderId;
+    this.deliveryId = deliveryId;
+    this.productInfo = productInfo;
+    this.requestVendor = requestVendor;
+    this.receiverVendor = receiverVendor;
+    this.requestNote = requestNote;
+    this.status = status;
+  }
+
+  public static Order ofCreate(
+      UUID orderId,
+      UUID deliveryId,
+      ProductInfo productInfo,
+      VendorInfo requestVendor,
+      VendorInfo receiverVendor,
+      String requestNote) {
+
+    return Order.builder()
+        .orderId(orderId)
+        .deliveryId(deliveryId)
+        .productInfo(productInfo)
+        .requestVendor(requestVendor)
+        .receiverVendor(receiverVendor)
+        .requestNote(requestNote)
+        .status(OrderState.CREATED)
+        .build();
+  }
+
+  public void cancel(UUID userId) {
+    this.status = OrderState.CANCELLED;
+    this.cancelledAt = LocalDateTime.now();
+    this.cancelledBy = userId;
+  }
 }
