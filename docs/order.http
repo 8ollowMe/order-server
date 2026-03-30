@@ -1,0 +1,14 @@
+### 주문 생성
+POST http://localhost:8082/api/v1/order
+Content-Type: application/json
+
+{
+  "productId": "aaaaaaaa-0000-0000-0000-000000000001",
+  "productName": "축구공",
+  "requestVendorId": "bbbbbbbb-0000-0000-0000-000000000001",
+  "requestVendorName": "요청업체A",
+  "receiverVendorId": "cccccccc-0000-0000-0000-000000000001",
+  "receiverVendorName": "수령업체B",
+  "quantity": 10,
+  "requestNote": "빠른 배송 부탁드립니다"
+}
