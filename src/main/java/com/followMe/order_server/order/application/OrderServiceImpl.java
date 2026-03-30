@@ -1,6 +1,7 @@
 package com.followMe.order_server.order.application;
 
 import com.followMe.order_server.order.application.dto.request.OrderCreateRequest;
+import com.followMe.order_server.order.application.dto.response.OrderResponse;
 import com.followMe.order_server.order.domain.Order;
 import com.followMe.order_server.order.domain.ProductInfo;
 import com.followMe.order_server.order.domain.VendorInfo;
@@ -46,5 +47,11 @@ public class OrderServiceImpl implements OrderService {
             request.requestNote());
 
     orderRepository.save(order);
+  }
+
+  @Override
+  public OrderResponse readById(UUID orderId) {
+    Order order = orderRepository.findById(orderId);
+    return OrderResponse.from(order);
   }
 }
