@@ -48,9 +48,8 @@ public class OrderServiceImpl implements OrderService {
     Order order =
         Order.ofCreate(
             orderId,
-            //            deliveryClientAdapter.createDelivery(
-            //                orderId, request.requestVendorId(), request.receiverVendorId()),
-            UUID.randomUUID(),
+            deliveryClientAdapter.createDelivery(
+                orderId, request.requestVendorId(), request.receiverVendorId()),
             productInfo,
             requestVendor,
             receiverVendor,
@@ -67,21 +66,18 @@ public class OrderServiceImpl implements OrderService {
 
   public CursorResponse<OrderResponse> search(
       CursorRequest cursorRequest, OrderSearchCondition condition, UserContext userContext) {
-    // 권한 기반 조건 고정
     OrderSearchCondition filteredCondition =
         OrderSearchFilter.applyRoleFilter(condition, userContext);
 
-    // Repository 호출
     List<Order> orders =
         orderRepository.searchByCursor(
             cursorRequest.getCursor(), cursorRequest.getSize(), filteredCondition);
 
-    // DTO 변환 및 CursorResponse 생성
     return CursorResponse.of(
-        orders, // List<Order>
+        orders,
         cursorRequest.getSize(),
-        OrderResponse::from, // mapper
-        order -> order.getOrderId().toString() // cursorExtractor
+        OrderResponse::from,
+        order -> order.getOrderId().toString()
         );
   }
 }
