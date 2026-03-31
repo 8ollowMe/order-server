@@ -1,6 +1,10 @@
 package com.followMe.order_server.order.application;
 
+import com.followMe.common.pagination.CursorRequest;
+import com.followMe.common.pagination.CursorResponse;
 import com.followMe.order_server.order.application.dto.request.OrderCreateRequest;
+import com.followMe.order_server.order.application.dto.request.OrderSearchCondition;
+import com.followMe.order_server.order.application.dto.request.UserContext;
 import com.followMe.order_server.order.application.dto.response.OrderResponse;
 import com.followMe.order_server.order.domain.Order;
 import com.followMe.order_server.order.domain.ProductInfo;
@@ -8,6 +12,7 @@ import com.followMe.order_server.order.domain.VendorInfo;
 import com.followMe.order_server.order.domain.repository.OrderRepository;
 import com.followMe.order_server.order.infrastructure.client.delivery.DeliveryClientAdapter;
 import com.followMe.order_server.order.infrastructure.client.hub.HubClient;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,18 +34,23 @@ public class OrderServiceImpl implements OrderService {
         new ProductInfo(request.productId(), request.productName(), request.quantity());
 
     VendorInfo requestVendor =
-        new VendorInfo(request.requestVendorId(), request.requestVendorName());
+        new VendorInfo(
+            request.requestVendorId(), request.requestVendorName(), request.requestVendorHubId());
 
     VendorInfo receiverVendor =
-        new VendorInfo(request.receiverVendorId(), request.receiverVendorName());
+        new VendorInfo(
+            request.receiverVendorId(),
+            request.receiverVendorName(),
+            request.receiverVendorHubId());
 
     //    hubClient.getStockBySomething(); // TODO : 재고 확인에 따른 배송 가능 여부 파악
     UUID orderId = UUID.randomUUID();
     Order order =
         Order.ofCreate(
             orderId,
-            deliveryClientAdapter.createDelivery(
-                orderId, request.requestVendorId(), request.receiverVendorId()),
+            //            deliveryClientAdapter.createDelivery(
+            //                orderId, request.requestVendorId(), request.receiverVendorId()),
+            UUID.randomUUID(),
             productInfo,
             requestVendor,
             receiverVendor,
@@ -53,5 +63,25 @@ public class OrderServiceImpl implements OrderService {
   public OrderResponse readById(UUID orderId) {
     Order order = orderRepository.findById(orderId);
     return OrderResponse.from(order);
+  }
+
+  public CursorResponse<OrderResponse> search(
+      CursorRequest cursorRequest, OrderSearchCondition condition, UserContext userContext) {
+    // 권한 기반 조건 고정
+    OrderSearchCondition filteredCondition =
+        OrderSearchFilter.applyRoleFilter(condition, userContext);
+
+    // Repository 호출
+    List<Order> orders =
+        orderRepository.searchByCursor(
+            cursorRequest.getCursor(), cursorRequest.getSize(), filteredCondition);
+
+    // DTO 변환 및 CursorResponse 생성
+    return CursorResponse.of(
+        orders, // List<Order>
+        cursorRequest.getSize(),
+        OrderResponse::from, // mapper
+        order -> order.getOrderId().toString() // cursorExtractor
+        );
   }
 }

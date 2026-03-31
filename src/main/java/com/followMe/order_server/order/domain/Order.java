@@ -1,6 +1,5 @@
 package com.followMe.order_server.order.domain;
 
-import com.followMe.common.entity.BaseAudit;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
@@ -21,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "p_order")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Order extends BaseAudit {
+public class Order extends BaseAudit2 {
 
   @Id
   @Column(name = "order_id")
@@ -35,14 +34,16 @@ public class Order extends BaseAudit {
   @Embedded
   @AttributeOverrides({
     @AttributeOverride(name = "vendorId", column = @Column(name = "request_vendor_id")),
-    @AttributeOverride(name = "vendorName", column = @Column(name = "request_vendor_name"))
+    @AttributeOverride(name = "vendorName", column = @Column(name = "request_vendor_name")),
+    @AttributeOverride(name = "hubId", column = @Column(name = "request_vendor_hub_id"))
   })
   private VendorInfo requestVendor;
 
   @Embedded
   @AttributeOverrides({
     @AttributeOverride(name = "vendorId", column = @Column(name = "receiver_vendor_id")),
-    @AttributeOverride(name = "vendorName", column = @Column(name = "receiver_vendor_name"))
+    @AttributeOverride(name = "vendorName", column = @Column(name = "receiver_vendor_name")),
+    @AttributeOverride(name = "hubId", column = @Column(name = "receiver_vendor_hub_id"))
   })
   private VendorInfo receiverVendor;
 
