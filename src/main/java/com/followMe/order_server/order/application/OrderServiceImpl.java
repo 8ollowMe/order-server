@@ -77,7 +77,6 @@ public class OrderServiceImpl implements OrderService {
         orders,
         cursorRequest.getSize(),
         OrderResponse::from,
-        order -> order.getOrderId().toString()
-        );
+        order -> order.getOrderId().toString());
   }
 }
