@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @FeignClient(name = "hub-server", fallbackFactory = HubFeignClientFallbackFactory.class)
 public interface HubFeignClient {
 
-  @GetMapping("//internal/v1/stocks/order")
+  @GetMapping("/internal/v1/stocks/order")
   HubStockDecreaseResponse decreaseStockIfAvailable(HubStockDecreaseRequest decreaseRequest);
 
   @GetMapping("/internal/v1/cancelstock")
