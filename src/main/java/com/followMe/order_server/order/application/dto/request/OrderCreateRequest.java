@@ -7,7 +7,9 @@ public record OrderCreateRequest(
     String productName,
     UUID requestVendorId,
     String requestVendorName,
+    UUID requestVendorHubId,
     UUID receiverVendorId,
     String receiverVendorName,
+    UUID receiverVendorHubId,
     int quantity,
     String requestNote) {}

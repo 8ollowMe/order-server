@@ -13,13 +13,16 @@ public class VendorInfo {
 
   private UUID vendorId;
   private String vendorName;
+  private UUID hubId;
 
-  public VendorInfo(UUID vendorId, String vendorName) {
+  public VendorInfo(UUID vendorId, String vendorName, UUID hubId) {
     if (vendorId == null) throw new IllegalArgumentException("vendorId 필수");
     if (vendorName == null || vendorName.isBlank())
       throw new IllegalArgumentException("vendorName 필수");
+    if (hubId == null) throw new IllegalArgumentException("hubId 필수");
 
     this.vendorId = vendorId;
     this.vendorName = vendorName;
+    this.hubId = hubId;
   }
 }
