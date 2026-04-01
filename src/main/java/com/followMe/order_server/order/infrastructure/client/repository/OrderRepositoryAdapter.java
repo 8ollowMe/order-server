@@ -39,7 +39,6 @@ public class OrderRepositoryAdapter implements OrderRepository {
     return jpaQueryFactory
         .selectFrom(order)
         .where(
-            cursorLt(cursor),
             hubEq(condition.hubId()),
             productIdEq(condition.productId()),
             orderIdEq(condition.orderId()),
@@ -52,13 +51,6 @@ public class OrderRepositoryAdapter implements OrderRepository {
         .orderBy(order.createdAt.desc(), order.orderId.desc()) // 안정적인 커서 페이징
         .limit(size)
         .fetch();
-  }
-
-  private BooleanExpression cursorLt(String cursor) {
-    if (cursor == null) return null;
-
-    LocalDateTime cursorTime = LocalDateTime.parse(cursor);
-    return QOrder.order.createdAt.lt(Instant.from(cursorTime));
   }
 
   private BooleanExpression hubEq(UUID hubId) {
