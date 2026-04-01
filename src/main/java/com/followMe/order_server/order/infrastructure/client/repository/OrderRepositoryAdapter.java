@@ -40,6 +40,7 @@ public class OrderRepositoryAdapter implements OrderRepository {
         .selectFrom(order)
         .where(
             hubEq(condition.hubId()),
+            deliveryManagerEa(condition.deliveryManagerId()),
             productIdEq(condition.productId()),
             orderIdEq(condition.orderId()),
             productNameContains(condition.productName()),
@@ -59,6 +60,11 @@ public class OrderRepositoryAdapter implements OrderRepository {
     QOrder order = QOrder.order;
     return order.requestVendor.hubId.eq(hubId).or(order.receiverVendor.hubId.eq(hubId));
   }
+
+    private BooleanExpression deliveryManagerEa(UUID deliveryManagerId){
+      if(deliveryManagerId == null) return null;
+      return QOrder.order.currentDeliveryManagerId.eq(deliveryManagerId);
+    }
 
   private BooleanExpression productIdEq(UUID productId) {
     if (productId == null) return null;

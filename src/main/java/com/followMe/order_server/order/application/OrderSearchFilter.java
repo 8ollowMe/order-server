@@ -18,6 +18,7 @@ public class OrderSearchFilter {
             null,
             condition.productId(),
             condition.orderId(),
+            condition.deliveryManagerId(),
             condition.productName(),
             condition.startDateTime(),
             condition.endDateTime(),
@@ -25,12 +26,26 @@ public class OrderSearchFilter {
             vendorId,
             condition.status());
       }
-      case DELIVERY_MANAGER -> condition;
+      case DELIVERY_MANAGER -> {
+        UUID deliveryManagerId = userContext.userId();
+        yield new OrderSearchCondition(
+            condition.hubId(),
+            condition.productId(),
+            condition.orderId(),
+            deliveryManagerId,
+            condition.productName(),
+            condition.startDateTime(),
+            condition.endDateTime(),
+            condition.createdBy(),
+            condition.vendorId(),
+            condition.status());
+      }
       case HUB_MANAGER ->
           new OrderSearchCondition(
               userContext.hubId(),
               condition.productId(),
               condition.orderId(),
+              condition.deliveryManagerId(),
               condition.productName(),
               condition.startDateTime(),
               condition.endDateTime(),
