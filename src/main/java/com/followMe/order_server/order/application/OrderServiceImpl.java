@@ -50,10 +50,12 @@ public class OrderServiceImpl implements OrderService {
 
     UUID orderId = UUID.randomUUID();
 
-
-    if(!hubClientAdapter.decreaseStockIfAvailable(orderId,productInfo.getProductId(), productInfo.getQuantity()).success()){
+    if (!hubClientAdapter
+        .decreaseStockIfAvailable(orderId, productInfo.getProductId(), productInfo.getQuantity())
+        .success()) {
       throw new RuntimeException("재고 부족");
-    };
+    }
+    ;
 
     DeliveryCreateResponse deliveryCreateResponse =
         deliveryClientAdapter.createDelivery(
@@ -138,6 +140,7 @@ public class OrderServiceImpl implements OrderService {
   public void cancel(UUID orderId, UUID userId) {
     Order order = orderRepository.findById(orderId);
     order.cancel(userId);
-    hubClientAdapter.rollbackStock(orderId,order.getProductInfo().getProductId(), order.getProductInfo().getQuantity());
+    hubClientAdapter.rollbackStock(
+        orderId, order.getProductInfo().getProductId(), order.getProductInfo().getQuantity());
   }
 }

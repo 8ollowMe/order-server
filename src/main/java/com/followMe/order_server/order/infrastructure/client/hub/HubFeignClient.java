@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public interface HubFeignClient {
 
   @GetMapping("//internal/v1/stocks/order")
-  HubStockDecreaseResponse decreaseStockIfAvailable (HubStockDecreaseRequest decreaseRequest);
+  HubStockDecreaseResponse decreaseStockIfAvailable(HubStockDecreaseRequest decreaseRequest);
 
   @GetMapping("/internal/v1/cancelstock")
-  HubStockRollbackResponse rollbackStock (HubStockRollbackRequest rollbackRequest);
+  HubStockRollbackResponse rollbackStock(HubStockRollbackRequest rollbackRequest);
 }

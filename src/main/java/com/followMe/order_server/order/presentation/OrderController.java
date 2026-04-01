@@ -87,8 +87,8 @@ public class OrderController {
   }
 
   @PatchMapping("/{orderId}/cancel")
-  public ResponseEntity<ApiResponse> cancel(@PathVariable UUID orderId,
-                                            @ModelAttribute UserContext userContext){
+  public ResponseEntity<ApiResponse> cancel(
+      @PathVariable UUID orderId, @ModelAttribute UserContext userContext) {
     orderService.cancel(orderId, userContext.userId());
     return ApiResponse.ok();
   }

@@ -15,23 +15,24 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class HubClientAdapter {
 
-    private final HubFeignClient hubFeignClient;
+  private final HubFeignClient hubFeignClient;
 
-    public HubStockDecreaseResponse decreaseStockIfAvailable(UUID orderId, UUID productId, int quantity) {
-        ProductStockRequest productStockRequest = ProductStockRequest.of(productId, quantity);
+  public HubStockDecreaseResponse decreaseStockIfAvailable(
+      UUID orderId, UUID productId, int quantity) {
+    ProductStockRequest productStockRequest = ProductStockRequest.of(productId, quantity);
 
-        List<ProductStockRequest> products = new ArrayList<>();
-        products.add(productStockRequest);
-        HubStockDecreaseRequest decreaseRequest = HubStockDecreaseRequest.of(orderId, products);
-        return hubFeignClient.decreaseStockIfAvailable(decreaseRequest);
-    }
+    List<ProductStockRequest> products = new ArrayList<>();
+    products.add(productStockRequest);
+    HubStockDecreaseRequest decreaseRequest = HubStockDecreaseRequest.of(orderId, products);
+    return hubFeignClient.decreaseStockIfAvailable(decreaseRequest);
+  }
 
-    public HubStockRollbackResponse rollbackStock(UUID orderId, UUID productId, int quantity){
-        ProductStockRequest productStockRequest = ProductStockRequest.of(productId, quantity);
+  public HubStockRollbackResponse rollbackStock(UUID orderId, UUID productId, int quantity) {
+    ProductStockRequest productStockRequest = ProductStockRequest.of(productId, quantity);
 
-        List<ProductStockRequest> products = new ArrayList<>();
-        products.add(productStockRequest);
-        HubStockRollbackRequest rollbackRequest = HubStockRollbackRequest.of(orderId, products);
-        return hubFeignClient.rollbackStock(rollbackRequest);
-    }
+    List<ProductStockRequest> products = new ArrayList<>();
+    products.add(productStockRequest);
+    HubStockRollbackRequest rollbackRequest = HubStockRollbackRequest.of(orderId, products);
+    return hubFeignClient.rollbackStock(rollbackRequest);
+  }
 }
