@@ -27,4 +27,6 @@ public interface OrderService {
 
   void updateDeliveryManager(
       UUID orderId, OrderUpdateDeliveryManagerRequest updateDeliveryManagerRequest);
+
+  void cancel(UUID orderId, UUID uuid);
 }

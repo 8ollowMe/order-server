@@ -16,7 +16,7 @@ import com.followMe.order_server.order.domain.VendorInfo;
 import com.followMe.order_server.order.domain.repository.OrderRepository;
 import com.followMe.order_server.order.infrastructure.client.delivery.DeliveryClientAdapter;
 import com.followMe.order_server.order.infrastructure.client.delivery.dto.response.DeliveryCreateResponse;
-import com.followMe.order_server.order.infrastructure.client.hub.HubClient;
+import com.followMe.order_server.order.infrastructure.client.hub.HubClientAdapter;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderServiceImpl implements OrderService {
 
   private final OrderRepository orderRepository;
-  private final HubClient hubClient;
+  private final HubClientAdapter hubClientAdapter;
   private final DeliveryClientAdapter deliveryClientAdapter;
 
   @Override
@@ -48,8 +48,15 @@ public class OrderServiceImpl implements OrderService {
             request.receiverVendorName(),
             request.receiverVendorHubId());
 
-    //    hubClient.getStockBySomething(); // TODO : 재고 확인에 따른 배송 가능 여부 파악
     UUID orderId = UUID.randomUUID();
+
+    if (!hubClientAdapter
+        .decreaseStockIfAvailable(orderId, productInfo.getProductId(), productInfo.getQuantity())
+        .success()) {
+      throw new RuntimeException("재고 부족");
+    }
+    ;
+
     DeliveryCreateResponse deliveryCreateResponse =
         deliveryClientAdapter.createDelivery(
             orderId, requestVendor.getHubId(), receiverVendor.getVendorId());
@@ -101,7 +108,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     if (updateRequest.quantity() != null) {
-      // TODO: 허브에게 재고확인
+      hubClientAdapter.decreaseStockIfAvailable(
+          orderId, order.getProductInfo().getProductId(), updateRequest.quantity());
       order.updateQuantity(updateRequest.quantity());
     }
   }
@@ -127,5 +135,13 @@ public class OrderServiceImpl implements OrderService {
       UUID orderId, OrderUpdateDeliveryManagerRequest updateDeliveryManagerRequest) {
     Order order = orderRepository.findById(orderId);
     order.updateDeliveryManager(updateDeliveryManagerRequest.deliveryManagerId());
+  }
+
+  @Override
+  public void cancel(UUID orderId, UUID userId) {
+    Order order = orderRepository.findById(orderId);
+    order.cancel(userId);
+    hubClientAdapter.rollbackStock(
+        orderId, order.getProductInfo().getProductId(), order.getProductInfo().getQuantity());
   }
 }
