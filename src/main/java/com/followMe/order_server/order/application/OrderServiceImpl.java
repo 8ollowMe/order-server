@@ -4,9 +4,12 @@ import com.followMe.common.pagination.CursorRequest;
 import com.followMe.common.pagination.CursorResponse;
 import com.followMe.order_server.order.application.dto.request.OrderCreateRequest;
 import com.followMe.order_server.order.application.dto.request.OrderSearchCondition;
+import com.followMe.order_server.order.application.dto.request.OrderUpdateRequest;
+import com.followMe.order_server.order.application.dto.request.OrderUpdateStateRequest;
 import com.followMe.order_server.order.application.dto.request.UserContext;
 import com.followMe.order_server.order.application.dto.response.OrderResponse;
 import com.followMe.order_server.order.domain.Order;
+import com.followMe.order_server.order.domain.OrderState;
 import com.followMe.order_server.order.domain.ProductInfo;
 import com.followMe.order_server.order.domain.VendorInfo;
 import com.followMe.order_server.order.domain.repository.OrderRepository;
@@ -59,11 +62,14 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public OrderResponse readById(UUID orderId) {
     Order order = orderRepository.findById(orderId);
     return OrderResponse.from(order);
   }
 
+  @Override
+  @Transactional(readOnly = true)
   public CursorResponse<OrderResponse> search(
       CursorRequest cursorRequest, OrderSearchCondition condition, UserContext userContext) {
     OrderSearchCondition filteredCondition =
@@ -78,5 +84,35 @@ public class OrderServiceImpl implements OrderService {
         cursorRequest.getSize(),
         OrderResponse::from,
         order -> order.getOrderId().toString());
+  }
+
+  @Override
+  @Transactional
+  public void update(UUID orderId, OrderUpdateRequest updateRequest) {
+    Order order = orderRepository.findById(orderId);
+
+    if (updateRequest.requestNote() != null) {
+      order.updateRequestNote(updateRequest.requestNote());
+    }
+
+    if (updateRequest.quantity() != null) {
+      // TODO: 허브에게 재고확인
+      order.updateQuantity(updateRequest.quantity());
+    }
+  }
+
+  @Override
+  @Transactional
+  public void updateStatus(UUID orderId, OrderUpdateStateRequest updateStateRequest) {
+    Order order = orderRepository.findById(orderId);
+    OrderState updatedState = OrderState.valueOf(updateStateRequest.status().toUpperCase());
+    order.updateState(updatedState);
+  }
+
+  @Override
+  @Transactional
+  public void softDeleteById(UUID orderId) {
+    Order order = orderRepository.findById(orderId);
+    order.softDelete(orderId);
   }
 }

@@ -103,4 +103,20 @@ public class Order extends BaseAudit2 {
     this.cancelledAt = LocalDateTime.now();
     this.cancelledBy = userId;
   }
+
+  public void updateRequestNote(String requestNote) {
+    this.requestNote = requestNote;
+  }
+
+  // TODO : 수정 시 재고 검증
+  public void updateQuantity(int quantity) {
+    ProductInfo updatedProductInfo =
+        new ProductInfo(
+            this.productInfo.getProductId(), this.productInfo.getProductName(), quantity);
+    this.productInfo = updatedProductInfo;
+  }
+
+  public void updateState(OrderState status) {
+    this.status = status;
+  }
 }
