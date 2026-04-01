@@ -51,7 +51,7 @@ public class OrderController {
 
   @GetMapping
   public ResponseEntity<ApiResponse> search(
-      @ModelAttribute CursorRequest cursorRequest,
+      CursorRequest cursorRequest,
       @ModelAttribute OrderSearchCondition condition,
       @ModelAttribute UserContext userContext) {
     // TODO: 인증/인가에 따라 UserContext 변경 가능
