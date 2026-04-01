@@ -4,6 +4,7 @@ import com.followMe.common.pagination.CursorRequest;
 import com.followMe.common.pagination.CursorResponse;
 import com.followMe.order_server.order.application.dto.request.OrderCreateRequest;
 import com.followMe.order_server.order.application.dto.request.OrderSearchCondition;
+import com.followMe.order_server.order.application.dto.request.OrderUpdateDeliveryManagerRequest;
 import com.followMe.order_server.order.application.dto.request.OrderUpdateRequest;
 import com.followMe.order_server.order.application.dto.request.OrderUpdateStateRequest;
 import com.followMe.order_server.order.application.dto.request.UserContext;
@@ -23,4 +24,7 @@ public interface OrderService {
   void updateStatus(UUID orderId, OrderUpdateStateRequest updateStateRequest);
 
   void softDeleteById(UUID orderId);
+
+  void updateDeliveryManager(
+      UUID orderId, OrderUpdateDeliveryManagerRequest updateDeliveryManagerRequest);
 }

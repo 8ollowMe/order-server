@@ -120,4 +120,12 @@ public class OrderServiceImpl implements OrderService {
     Order order = orderRepository.findById(orderId);
     order.softDelete(orderId);
   }
+
+  @Override
+  @Transactional
+  public void updateDeliveryManager(
+      UUID orderId, OrderUpdateDeliveryManagerRequest updateDeliveryManagerRequest) {
+    Order order = orderRepository.findById(orderId);
+    order.updateDeliveryManager(updateDeliveryManagerRequest.deliveryManagerId());
+  }
 }

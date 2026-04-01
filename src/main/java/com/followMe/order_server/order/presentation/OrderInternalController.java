@@ -2,6 +2,7 @@ package com.followMe.order_server.order.presentation;
 
 import com.followMe.common.response.ApiResponse;
 import com.followMe.order_server.order.application.OrderService;
+import com.followMe.order_server.order.application.dto.request.OrderUpdateDeliveryManagerRequest;
 import com.followMe.order_server.order.application.dto.request.OrderUpdateStateRequest;
 import com.followMe.order_server.order.application.dto.response.OrderResponse;
 import java.util.UUID;
@@ -38,6 +39,14 @@ public class OrderInternalController {
   @DeleteMapping("/{orderId}")
   public ResponseEntity<ApiResponse> delete(@PathVariable UUID orderId) {
     orderService.softDeleteById(orderId);
+    return ApiResponse.ok();
+  }
+
+  @PatchMapping("/{orderId}/delivery")
+  public ResponseEntity<ApiResponse> updateDeliveryManager(
+      @PathVariable UUID orderId,
+      @RequestBody OrderUpdateDeliveryManagerRequest updateDeliveryManagerRequest) {
+    orderService.updateDeliveryManager(orderId, updateDeliveryManagerRequest);
     return ApiResponse.ok();
   }
 }
