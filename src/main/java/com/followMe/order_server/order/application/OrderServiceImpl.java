@@ -4,6 +4,7 @@ import com.followMe.common.pagination.CursorRequest;
 import com.followMe.common.pagination.CursorResponse;
 import com.followMe.order_server.order.application.dto.request.OrderCreateRequest;
 import com.followMe.order_server.order.application.dto.request.OrderSearchCondition;
+import com.followMe.order_server.order.application.dto.request.OrderUpdateDeliveryManagerRequest;
 import com.followMe.order_server.order.application.dto.request.OrderUpdateRequest;
 import com.followMe.order_server.order.application.dto.request.OrderUpdateStateRequest;
 import com.followMe.order_server.order.application.dto.request.UserContext;
@@ -14,6 +15,7 @@ import com.followMe.order_server.order.domain.ProductInfo;
 import com.followMe.order_server.order.domain.VendorInfo;
 import com.followMe.order_server.order.domain.repository.OrderRepository;
 import com.followMe.order_server.order.infrastructure.client.delivery.DeliveryClientAdapter;
+import com.followMe.order_server.order.infrastructure.client.delivery.dto.response.DeliveryCreateResponse;
 import com.followMe.order_server.order.infrastructure.client.hub.HubClient;
 import java.util.List;
 import java.util.UUID;
@@ -48,11 +50,14 @@ public class OrderServiceImpl implements OrderService {
 
     //    hubClient.getStockBySomething(); // TODO : 재고 확인에 따른 배송 가능 여부 파악
     UUID orderId = UUID.randomUUID();
+    DeliveryCreateResponse deliveryCreateResponse =
+        deliveryClientAdapter.createDelivery(
+            orderId, requestVendor.getHubId(), receiverVendor.getVendorId());
     Order order =
         Order.ofCreate(
             orderId,
-            deliveryClientAdapter.createDelivery(
-                orderId, request.requestVendorId(), request.receiverVendorId()),
+            deliveryCreateResponse.deliveryId(),
+            deliveryCreateResponse.deliveryManagerId(),
             productInfo,
             requestVendor,
             receiverVendor,
@@ -114,5 +119,13 @@ public class OrderServiceImpl implements OrderService {
   public void softDeleteById(UUID orderId) {
     Order order = orderRepository.findById(orderId);
     order.softDelete(orderId);
+  }
+
+  @Override
+  @Transactional
+  public void updateDeliveryManager(
+      UUID orderId, OrderUpdateDeliveryManagerRequest updateDeliveryManagerRequest) {
+    Order order = orderRepository.findById(orderId);
+    order.updateDeliveryManager(updateDeliveryManagerRequest.deliveryManagerId());
   }
 }

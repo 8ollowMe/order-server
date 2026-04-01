@@ -8,6 +8,7 @@ public record OrderSearchCondition(
     UUID hubId,
     UUID productId,
     UUID orderId,
+    UUID deliveryManagerId,
     String productName,
     LocalDateTime startDateTime,
     LocalDateTime endDateTime,

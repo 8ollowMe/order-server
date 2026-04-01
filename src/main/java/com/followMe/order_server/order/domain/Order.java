@@ -29,6 +29,9 @@ public class Order extends BaseAudit2 {
   @Column(name = "delivery_id")
   private UUID deliveryId;
 
+  @Column(name = "current_delivery_manager_id")
+  private UUID currentDeliveryManagerId;
+
   @Embedded private ProductInfo productInfo;
 
   @Embedded
@@ -64,6 +67,7 @@ public class Order extends BaseAudit2 {
   private Order(
       UUID orderId,
       UUID deliveryId,
+      UUID currentDeliveryManagerId,
       ProductInfo productInfo,
       VendorInfo requestVendor,
       VendorInfo receiverVendor,
@@ -72,6 +76,7 @@ public class Order extends BaseAudit2 {
 
     this.orderId = orderId;
     this.deliveryId = deliveryId;
+    this.currentDeliveryManagerId = currentDeliveryManagerId;
     this.productInfo = productInfo;
     this.requestVendor = requestVendor;
     this.receiverVendor = receiverVendor;
@@ -82,6 +87,7 @@ public class Order extends BaseAudit2 {
   public static Order ofCreate(
       UUID orderId,
       UUID deliveryId,
+      UUID currentDeliveryManagerId,
       ProductInfo productInfo,
       VendorInfo requestVendor,
       VendorInfo receiverVendor,
@@ -90,6 +96,7 @@ public class Order extends BaseAudit2 {
     return Order.builder()
         .orderId(orderId)
         .deliveryId(deliveryId)
+        .currentDeliveryManagerId(currentDeliveryManagerId)
         .productInfo(productInfo)
         .requestVendor(requestVendor)
         .receiverVendor(receiverVendor)
@@ -118,5 +125,9 @@ public class Order extends BaseAudit2 {
 
   public void updateState(OrderState status) {
     this.status = status;
+  }
+
+  public void updateDeliveryManager(UUID updatedDeliveryManagerId) {
+    this.currentDeliveryManagerId = updatedDeliveryManagerId;
   }
 }
