@@ -61,10 +61,10 @@ public class OrderRepositoryAdapter implements OrderRepository {
     return order.requestVendor.hubId.eq(hubId).or(order.receiverVendor.hubId.eq(hubId));
   }
 
-    private BooleanExpression deliveryManagerEa(UUID deliveryManagerId){
-      if(deliveryManagerId == null) return null;
-      return QOrder.order.currentDeliveryManagerId.eq(deliveryManagerId);
-    }
+  private BooleanExpression deliveryManagerEa(UUID deliveryManagerId) {
+    if (deliveryManagerId == null) return null;
+    return QOrder.order.currentDeliveryManagerId.eq(deliveryManagerId);
+  }
 
   private BooleanExpression productIdEq(UUID productId) {
     if (productId == null) return null;
