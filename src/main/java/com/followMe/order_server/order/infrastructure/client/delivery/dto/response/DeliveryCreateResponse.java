@@ -2,4 +2,4 @@ package com.followMe.order_server.order.infrastructure.client.delivery.dto.respo
 
 import java.util.UUID;
 
-public record DeliveryCreateResponse(UUID deliveryId) {}
+public record DeliveryCreateResponse(UUID deliveryId, UUID deliveryManagerId) {}
