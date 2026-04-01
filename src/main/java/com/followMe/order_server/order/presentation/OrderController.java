@@ -85,4 +85,11 @@ public class OrderController {
     orderService.softDeleteById(orderId);
     return ApiResponse.ok();
   }
+
+  @PatchMapping("/{orderId}/cancel")
+  public ResponseEntity<ApiResponse> cancel(@PathVariable UUID orderId,
+                                            @ModelAttribute UserContext userContext){
+    orderService.cancel(orderId, userContext.userId());
+    return ApiResponse.ok();
+  }
 }
