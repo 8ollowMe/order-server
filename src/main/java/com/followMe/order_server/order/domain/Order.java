@@ -115,12 +115,10 @@ public class Order extends BaseAudit2 {
     this.requestNote = requestNote;
   }
 
-  // TODO : 수정 시 재고 검증
   public void updateQuantity(int quantity) {
-    ProductInfo updatedProductInfo =
+    this.productInfo =
         new ProductInfo(
             this.productInfo.getProductId(), this.productInfo.getProductName(), quantity);
-    this.productInfo = updatedProductInfo;
   }
 
   public void updateState(OrderState status) {

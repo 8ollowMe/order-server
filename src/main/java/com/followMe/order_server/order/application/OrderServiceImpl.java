@@ -108,7 +108,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     if (updateRequest.quantity() != null) {
-      // TODO: 허브에게 재고확인
+      hubClientAdapter.decreaseStockIfAvailable(
+          orderId, order.getProductInfo().getProductId(), updateRequest.quantity());
       order.updateQuantity(updateRequest.quantity());
     }
   }
