@@ -5,14 +5,16 @@ import com.followMe.order_server.order.infrastructure.client.hub.dto.request.Hub
 import com.followMe.order_server.order.infrastructure.client.hub.dto.response.HubStockDecreaseResponse;
 import com.followMe.order_server.order.infrastructure.client.hub.dto.response.HubStockRollbackResponse;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "hub-server", fallbackFactory = HubFeignClientFallbackFactory.class)
 public interface HubFeignClient {
 
-  @GetMapping("/internal/v1/stocks/order")
-  HubStockDecreaseResponse decreaseStockIfAvailable(HubStockDecreaseRequest decreaseRequest);
+  @PatchMapping("/internal/v1/stocks/order")
+  HubStockDecreaseResponse decreaseStockIfAvailable(
+      @RequestBody HubStockDecreaseRequest decreaseRequest);
 
-  @GetMapping("/internal/v1/cancelstock")
-  HubStockRollbackResponse rollbackStock(HubStockRollbackRequest rollbackRequest);
+  @PatchMapping("/internal/v1/cancel/stock")
+  HubStockRollbackResponse rollbackStock(@RequestBody HubStockRollbackRequest rollbackRequest);
 }

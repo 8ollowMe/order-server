@@ -18,4 +18,8 @@ public class DeliveryClientAdapter {
         DeliveryCreateRequest.of(orderId, sourceHubId, receiverVendorId);
     return deliveryFeignClient.createDelivery(createRequest);
   }
+
+  public void cancelDelivery(UUID deliveryId) {
+    deliveryFeignClient.cancelDelivery(deliveryId);
+  }
 }
