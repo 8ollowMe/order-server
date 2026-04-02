@@ -144,5 +144,6 @@ public class OrderServiceImpl implements OrderService {
     order.cancel(userId);
     hubClientAdapter.rollbackStock(
         orderId, order.getProductInfo().getProductId(), order.getProductInfo().getQuantity());
+    deliveryClientAdapter.cancelDelivery(order.getDeliveryId());
   }
 }
