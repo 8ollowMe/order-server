@@ -1,5 +1,8 @@
 package com.followMe.order_server.order.domain;
 
+import com.followMe.order_server.order.domain.exception.InvalidOrderQuantityException;
+import com.followMe.order_server.order.domain.exception.InvalidStatusToCancelException;
+import com.followMe.order_server.order.domain.exception.OrderStateTransitionNotAllowedException;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
@@ -15,11 +18,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Table(name = "p_order")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLRestriction("deleted_at IS NULL")
 public class Order extends BaseAudit2 {
 
   @Id
@@ -106,9 +111,20 @@ public class Order extends BaseAudit2 {
   }
 
   public void cancel(UUID userId) {
+    validateStatusCancelAllowed(this.status);
     this.status = OrderState.CANCELLED;
     this.cancelledAt = LocalDateTime.now();
     this.cancelledBy = userId;
+  }
+
+  private void validateStatusCancelAllowed(OrderState status) {
+    if (!isCancelable(status)) {
+      throw new InvalidStatusToCancelException();
+    }
+  }
+
+  private boolean isCancelable(OrderState status) {
+    return status == OrderState.CREATED;
   }
 
   public void updateRequestNote(String requestNote) {
@@ -116,13 +132,31 @@ public class Order extends BaseAudit2 {
   }
 
   public void updateQuantity(int quantity) {
+    validateQuantity(quantity);
     this.productInfo =
         new ProductInfo(
             this.productInfo.getProductId(), this.productInfo.getProductName(), quantity);
   }
 
-  public void updateState(OrderState status) {
-    this.status = status;
+  private void validateQuantity(int quantity) {
+    if (!isPositive(quantity)) {
+      throw new InvalidOrderQuantityException();
+    }
+  }
+
+  private static boolean isPositive(int quantity) {
+    return quantity < 0;
+  }
+
+  public void updateState(OrderState updatedStatus) {
+    validateStatusTransitionAllowed(updatedStatus);
+    this.status = updatedStatus;
+  }
+
+  private void validateStatusTransitionAllowed(OrderState updatedStatus) {
+    if (!this.status.canTransitionTo(updatedStatus)) {
+      throw new OrderStateTransitionNotAllowedException();
+    }
   }
 
   public void updateDeliveryManager(UUID updatedDeliveryManagerId) {
