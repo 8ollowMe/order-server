@@ -1,8 +1,8 @@
 package com.followMe.order_server.order.domain;
 
-import com.followMe.order_server.order.domain.exception.OrderStateTransitionNotAllowedException;
 import com.followMe.order_server.order.domain.exception.InvalidOrderQuantityException;
 import com.followMe.order_server.order.domain.exception.InvalidStatusToCancelException;
+import com.followMe.order_server.order.domain.exception.OrderStateTransitionNotAllowedException;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
@@ -111,12 +111,16 @@ public class Order extends BaseAudit2 {
   }
 
   public void cancel(UUID userId) {
-    if (!isCancelable(this.status)) {
-      throw new InvalidStatusToCancelException();
-    }
+    validateStatusCancelAllowed(this.status);
     this.status = OrderState.CANCELLED;
     this.cancelledAt = LocalDateTime.now();
     this.cancelledBy = userId;
+  }
+
+  private void validateStatusCancelAllowed(OrderState status) {
+    if (!isCancelable(status)) {
+      throw new InvalidStatusToCancelException();
+    }
   }
 
   private boolean isCancelable(OrderState status) {
@@ -135,16 +139,24 @@ public class Order extends BaseAudit2 {
   }
 
   private void validateQuantity(int quantity) {
-    if (quantity <= 0) {
+    if (!isPositive(quantity)) {
       throw new InvalidOrderQuantityException();
     }
   }
 
+  private static boolean isPositive(int quantity) {
+    return quantity < 0;
+  }
+
   public void updateState(OrderState updatedStatus) {
+    validateStatusTransitionAllowed(updatedStatus);
+    this.status = updatedStatus;
+  }
+
+  private void validateStatusTransitionAllowed(OrderState updatedStatus) {
     if (!this.status.canTransitionTo(updatedStatus)) {
       throw new OrderStateTransitionNotAllowedException();
     }
-    this.status = updatedStatus;
   }
 
   public void updateDeliveryManager(UUID updatedDeliveryManagerId) {

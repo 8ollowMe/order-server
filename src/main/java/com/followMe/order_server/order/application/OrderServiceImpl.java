@@ -56,7 +56,6 @@ public class OrderServiceImpl implements OrderService {
         .success()) {
       throw new StockShortageException();
     }
-    ;
 
     DeliveryCreateResponse deliveryCreateResponse =
         deliveryClientAdapter.createDelivery(
