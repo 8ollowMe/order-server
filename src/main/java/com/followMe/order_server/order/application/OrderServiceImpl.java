@@ -139,6 +139,7 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
+  @Transactional
   public void cancel(UUID orderId, UUID userId) {
     Order order = orderRepository.findById(orderId);
     order.cancel(userId);
