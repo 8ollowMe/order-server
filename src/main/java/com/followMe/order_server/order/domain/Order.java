@@ -1,5 +1,8 @@
 package com.followMe.order_server.order.domain;
 
+import com.followMe.order_server.order.domain.exception.OrderStateTransitionNotAllowedException;
+import com.followMe.order_server.order.domain.exception.InvalidOrderQuantityException;
+import com.followMe.order_server.order.domain.exception.InvalidStatusToCancelException;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
@@ -15,11 +18,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Table(name = "p_order")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLRestriction("deleted_at IS NULL")
 public class Order extends BaseAudit2 {
 
   @Id
@@ -106,9 +111,16 @@ public class Order extends BaseAudit2 {
   }
 
   public void cancel(UUID userId) {
+    if (!isCancelable(this.status)) {
+      throw new InvalidStatusToCancelException();
+    }
     this.status = OrderState.CANCELLED;
     this.cancelledAt = LocalDateTime.now();
     this.cancelledBy = userId;
+  }
+
+  private boolean isCancelable(OrderState status) {
+    return status == OrderState.CREATED;
   }
 
   public void updateRequestNote(String requestNote) {
@@ -116,13 +128,23 @@ public class Order extends BaseAudit2 {
   }
 
   public void updateQuantity(int quantity) {
+    validateQuantity(quantity);
     this.productInfo =
         new ProductInfo(
             this.productInfo.getProductId(), this.productInfo.getProductName(), quantity);
   }
 
-  public void updateState(OrderState status) {
-    this.status = status;
+  private void validateQuantity(int quantity) {
+    if (quantity <= 0) {
+      throw new InvalidOrderQuantityException();
+    }
+  }
+
+  public void updateState(OrderState updatedStatus) {
+    if (!this.status.canTransitionTo(updatedStatus)) {
+      throw new OrderStateTransitionNotAllowedException();
+    }
+    this.status = updatedStatus;
   }
 
   public void updateDeliveryManager(UUID updatedDeliveryManagerId) {

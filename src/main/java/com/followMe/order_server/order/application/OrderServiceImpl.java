@@ -13,6 +13,7 @@ import com.followMe.order_server.order.domain.Order;
 import com.followMe.order_server.order.domain.OrderState;
 import com.followMe.order_server.order.domain.ProductInfo;
 import com.followMe.order_server.order.domain.VendorInfo;
+import com.followMe.order_server.order.domain.exception.StockShortageException;
 import com.followMe.order_server.order.domain.repository.OrderRepository;
 import com.followMe.order_server.order.infrastructure.client.delivery.DeliveryClientAdapter;
 import com.followMe.order_server.order.infrastructure.client.delivery.dto.response.DeliveryCreateResponse;
@@ -53,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
     if (!hubClientAdapter
         .decreaseStockIfAvailable(orderId, productInfo.getProductId(), productInfo.getQuantity())
         .success()) {
-      throw new RuntimeException("재고 부족");
+      throw new StockShortageException();
     }
     ;
 
