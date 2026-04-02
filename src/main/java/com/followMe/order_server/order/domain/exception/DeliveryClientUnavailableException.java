@@ -5,6 +5,6 @@ import com.followMe.common.exception.BusinessException;
 public class DeliveryClientUnavailableException extends BusinessException {
 
   public DeliveryClientUnavailableException() {
-    super(OrderErrorCode.DELIVERY_CLIENT_UNAVAILABLE);
+    super(OrderErrorCode.DELIVERY_SERVICE_UNAVAILABLE);
   }
 }
