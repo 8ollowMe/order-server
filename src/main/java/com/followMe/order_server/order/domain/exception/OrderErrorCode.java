@@ -29,7 +29,10 @@ public enum OrderErrorCode implements ErrorCode {
   DELIVERY_SERVICE_UNAVAILABLE("D002", "배달 서비스를 사용할 수 없습니다.", HttpStatus.SERVICE_UNAVAILABLE),
 
   // ===================== HUB =====================
-  HUB_SERVICE_UNAVAILABLE("H001", "허브 서비스를 사용할 수 없습니다.", HttpStatus.SERVICE_UNAVAILABLE);
+  HUB_SERVICE_UNAVAILABLE("H001", "허브 서비스를 사용할 수 없습니다.", HttpStatus.SERVICE_UNAVAILABLE),
+
+  // ===================== SLACK =====================
+  SLACK_SEVER_NOT_AVAILABLE("S001", "슬랙 메세지 전송 서비스를 사용할 수 없습니다", HttpStatus.SERVICE_UNAVAILABLE);
 
   private final String code;
   private final String message;
