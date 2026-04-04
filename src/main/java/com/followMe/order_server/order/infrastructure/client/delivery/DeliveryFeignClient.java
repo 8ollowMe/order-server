@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "delivery-service")
+@FeignClient(name = "delivery-server", fallbackFactory = DeliveryFeignClientFallbackFactory.class)
 public interface DeliveryFeignClient {
 
   @PostMapping("/internal/v1/deliveries")
