@@ -69,6 +69,7 @@ public class OrderController {
   @PatchMapping("/{orderId}")
   public ResponseEntity<ApiResponse> update(
       @PathVariable UUID orderId, @RequestBody OrderUpdateRequest updateRequest) {
+    // TODO: 인증인가 필요
     orderService.update(orderId, updateRequest);
     return ApiResponse.ok();
   }
@@ -82,6 +83,7 @@ public class OrderController {
 
   @DeleteMapping("/{orderId}")
   public ResponseEntity<ApiResponse> delete(@PathVariable UUID orderId) {
+    // TODO: 인증인가 필요
     orderService.softDeleteById(orderId);
     return ApiResponse.ok();
   }
@@ -89,6 +91,7 @@ public class OrderController {
   @PatchMapping("/{orderId}/cancel")
   public ResponseEntity<ApiResponse> cancel(
       @PathVariable UUID orderId, @ModelAttribute UserContext userContext) {
+    // TODO: 인증인가 필요
     orderService.cancel(orderId, userContext.userId());
     return ApiResponse.ok();
   }

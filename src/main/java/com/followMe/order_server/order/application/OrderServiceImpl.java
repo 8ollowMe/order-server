@@ -18,6 +18,8 @@ import com.followMe.order_server.order.domain.repository.OrderRepository;
 import com.followMe.order_server.order.infrastructure.client.delivery.DeliveryClientAdapter;
 import com.followMe.order_server.order.infrastructure.client.delivery.dto.response.DeliveryCreateResponse;
 import com.followMe.order_server.order.infrastructure.client.hub.HubClientAdapter;
+import com.followMe.order_server.order.infrastructure.client.slack.MessageConstructor;
+import com.followMe.order_server.order.infrastructure.client.slack.SlackClientAdapter;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ public class OrderServiceImpl implements OrderService {
   private final OrderRepository orderRepository;
   private final HubClientAdapter hubClientAdapter;
   private final DeliveryClientAdapter deliveryClientAdapter;
+  private final SlackClientAdapter slackClientAdapter;
 
   @Override
   @Transactional
@@ -41,13 +44,17 @@ public class OrderServiceImpl implements OrderService {
 
     VendorInfo requestVendor =
         new VendorInfo(
-            request.requestVendorId(), request.requestVendorName(), request.requestVendorHubId());
+            request.requestVendorId(),
+            request.requestVendorName(),
+            request.requestVendorHubId(),
+            request.requestVendorHubName());
 
     VendorInfo receiverVendor =
         new VendorInfo(
             request.receiverVendorId(),
             request.receiverVendorName(),
-            request.receiverVendorHubId());
+            request.receiverVendorHubId(),
+            request.receiverVendorHubName());
 
     UUID orderId = UUID.randomUUID();
 
@@ -71,6 +78,19 @@ public class OrderServiceImpl implements OrderService {
             request.requestNote());
 
     orderRepository.save(order);
+
+    sendSlack(order, deliveryCreateResponse);
+  }
+
+  private void sendSlack(Order order, DeliveryCreateResponse deliveryCreateResponse) {
+    String message =
+        MessageConstructor.generateOrderCreatedMessage(
+            order,
+            deliveryCreateResponse.waypoints(),
+            deliveryCreateResponse.receiverVendorAddress(),
+            deliveryCreateResponse.deliveryManagerName());
+
+    slackClientAdapter.sendSlack(order.getCurrentDeliveryManagerId(), order.getOrderId(), message);
   }
 
   @Override
