@@ -16,12 +16,17 @@ X-Vendor-Id: {{vendorId}}
 {
   "productId": "aaaaaaaa-0000-0000-0000-000000000001",
   "productName": "축구공",
+
   "requestVendorId": "bbbbbbbb-0000-0000-0000-000000000001",
   "requestVendorName": "요청업체A",
   "requestVendorHubId": "dddddddd-0000-0000-0000-000000000001",
+  "requestVendorHubName": "요청허브A",
+
   "receiverVendorId": "cccccccc-0000-0000-0000-000000000001",
   "receiverVendorName": "수령업체B",
   "receiverVendorHubId": "eeeeeeee-0000-0000-0000-000000000001",
+  "receiverVendorHubName": "수령허브B",
+
   "quantity": 10,
   "requestNote": "빠른 배송 부탁드립니다"
 }
@@ -49,3 +54,30 @@ X-User-Id: {{userId}}
 X-User-Role: MASTER
 X-Hub-Id: {{hubId}}
 X-Vendor-Id: {{vendorId}}
+
+### 주문 수정
+PATCH {{baseUrl}}/api/v1/orders/6a9ac0ef-7c43-4cb2-bec2-23fdf49ed3d9
+Content-Type: application/json
+X-User-Id: {{userId}}
+X-User-Role: MASTER
+X-Hub-Id: {{hubId}}
+X-Vendor-Id: {{vendorId}}
+
+{
+  "requestNote": "배송 메모 수정0405",
+  "quantity": 20
+}
+
+### SOFT - DELETE
+DELETE {{baseUrl}}/api/v1/orders/{{orderId}}
+X-User-Id: {{userId}}
+X-User-Role: MASTER
+X-Hub-Id: {{hubId}}
+X-Vendor-Id: {{vendorId}}
+
+### CANCEL
+PATCH {{baseUrl}}/api/v1/orders/{{orderId}}/cancel
+X-User-Id: {{userId}}
+X-User-Role: VENDOR
+X-Vendor-Id: {{vendorId}}
+X-Hub-Id: {{hubId}}

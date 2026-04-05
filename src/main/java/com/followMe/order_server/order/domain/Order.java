@@ -43,7 +43,8 @@ public class Order extends BaseAudit2 {
   @AttributeOverrides({
     @AttributeOverride(name = "vendorId", column = @Column(name = "request_vendor_id")),
     @AttributeOverride(name = "vendorName", column = @Column(name = "request_vendor_name")),
-    @AttributeOverride(name = "hubId", column = @Column(name = "request_vendor_hub_id"))
+    @AttributeOverride(name = "hubId", column = @Column(name = "request_vendor_hub_id")),
+    @AttributeOverride(name = "hubName", column = @Column(name = "request_vendor_hub_name"))
   })
   private VendorInfo requestVendor;
 
@@ -51,7 +52,8 @@ public class Order extends BaseAudit2 {
   @AttributeOverrides({
     @AttributeOverride(name = "vendorId", column = @Column(name = "receiver_vendor_id")),
     @AttributeOverride(name = "vendorName", column = @Column(name = "receiver_vendor_name")),
-    @AttributeOverride(name = "hubId", column = @Column(name = "receiver_vendor_hub_id"))
+    @AttributeOverride(name = "hubId", column = @Column(name = "receiver_vendor_hub_id")),
+    @AttributeOverride(name = "hubName", column = @Column(name = "receiver_vendor_hub_name"))
   })
   private VendorInfo receiverVendor;
 
@@ -110,6 +112,10 @@ public class Order extends BaseAudit2 {
         .build();
   }
 
+  private static boolean isPositive(int quantity) {
+    return quantity < 0;
+  }
+
   public void cancel(UUID userId) {
     validateStatusCancelAllowed(this.status);
     this.status = OrderState.CANCELLED;
@@ -142,10 +148,6 @@ public class Order extends BaseAudit2 {
     if (!isPositive(quantity)) {
       throw new InvalidOrderQuantityException();
     }
-  }
-
-  private static boolean isPositive(int quantity) {
-    return quantity < 0;
   }
 
   public void updateState(OrderState updatedStatus) {

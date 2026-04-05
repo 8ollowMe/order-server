@@ -11,7 +11,6 @@ import com.followMe.order_server.order.application.dto.request.OrderUpdateStateR
 import com.followMe.order_server.order.application.dto.request.UserContext;
 import com.followMe.order_server.order.application.dto.request.UserRole;
 import com.followMe.order_server.order.application.dto.response.OrderResponse;
-import com.followMe.order_server.order.infrastructure.client.repository.OrderRepositoryAdapter;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
   private final OrderService orderService;
-  private final OrderRepositoryAdapter orderRepositoryAdapter;
 
   @ModelAttribute
   public UserContext userContext(
@@ -69,6 +67,7 @@ public class OrderController {
   @PatchMapping("/{orderId}")
   public ResponseEntity<ApiResponse> update(
       @PathVariable UUID orderId, @RequestBody OrderUpdateRequest updateRequest) {
+    // TODO: 인증인가 필요
     orderService.update(orderId, updateRequest);
     return ApiResponse.ok();
   }
@@ -82,6 +81,7 @@ public class OrderController {
 
   @DeleteMapping("/{orderId}")
   public ResponseEntity<ApiResponse> delete(@PathVariable UUID orderId) {
+    // TODO: 인증인가 필요
     orderService.softDeleteById(orderId);
     return ApiResponse.ok();
   }
@@ -89,6 +89,7 @@ public class OrderController {
   @PatchMapping("/{orderId}/cancel")
   public ResponseEntity<ApiResponse> cancel(
       @PathVariable UUID orderId, @ModelAttribute UserContext userContext) {
+    // TODO: 인증인가 필요
     orderService.cancel(orderId, userContext.userId());
     return ApiResponse.ok();
   }
