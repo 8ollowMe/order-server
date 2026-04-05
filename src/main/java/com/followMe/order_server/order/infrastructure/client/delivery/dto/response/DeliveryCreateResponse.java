@@ -7,5 +7,4 @@ public record DeliveryCreateResponse(
     UUID deliveryId,
     UUID deliveryManagerId,
     List<String> waypoints,
-    String receiverVendorAddress,
     String deliveryManagerName) {}

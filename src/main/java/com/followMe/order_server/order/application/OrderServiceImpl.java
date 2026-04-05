@@ -87,7 +87,6 @@ public class OrderServiceImpl implements OrderService {
         MessageConstructor.generateOrderCreatedMessage(
             order,
             deliveryCreateResponse.waypoints(),
-            deliveryCreateResponse.receiverVendorAddress(),
             deliveryCreateResponse.deliveryManagerName());
 
     slackClientAdapter.sendSlack(order.getCurrentDeliveryManagerId(), order.getOrderId(), message);

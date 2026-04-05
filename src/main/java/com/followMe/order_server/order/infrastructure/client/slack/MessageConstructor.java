@@ -12,7 +12,7 @@ public class MessageConstructor {
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
   public static String generateOrderCreatedMessage(
-      Order order, List<String> waypoints, String destinationAddress, String deliveryManagerName) {
+      Order order, List<String> waypoints, String deliveryManagerName) {
 
     StringBuilder waypointsContent = new StringBuilder();
     for (String waypoint : waypoints) {
@@ -46,7 +46,7 @@ public class MessageConstructor {
         order.getProductInfo().getProductName(),
         order.getRequestVendor().getHubName(),
         waypointsContent,
-        destinationAddress,
+        order.getReceiverVendor().getHubName(),
         deliveryManagerName,
         order.getRequestNote(),
         deadline);
