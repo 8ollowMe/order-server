@@ -4,7 +4,4 @@ import java.util.List;
 import java.util.UUID;
 
 public record DeliveryCreateResponse(
-    UUID deliveryId,
-    UUID deliveryManagerId,
-    List<String> waypoints,
-    String deliveryManagerName) {}
+    UUID deliveryId, UUID deliveryManagerId, List<String> waypoints, String deliveryManagerName) {}
