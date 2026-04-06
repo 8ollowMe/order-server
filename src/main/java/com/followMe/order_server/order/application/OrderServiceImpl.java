@@ -13,11 +13,11 @@ import com.followMe.order_server.order.domain.Order;
 import com.followMe.order_server.order.domain.OrderState;
 import com.followMe.order_server.order.domain.ProductInfo;
 import com.followMe.order_server.order.domain.VendorInfo;
-import com.followMe.order_server.order.domain.exception.StockShortageException;
 import com.followMe.order_server.order.domain.repository.OrderRepository;
 import com.followMe.order_server.order.infrastructure.client.delivery.DeliveryClientAdapter;
 import com.followMe.order_server.order.infrastructure.client.delivery.dto.response.DeliveryCreateResponse;
 import com.followMe.order_server.order.infrastructure.client.hub.HubClientAdapter;
+import com.followMe.order_server.order.infrastructure.client.hub.dto.response.HubStockDecreaseResponse;
 import com.followMe.order_server.order.infrastructure.client.slack.MessageConstructor;
 import com.followMe.order_server.order.infrastructure.client.slack.SlackClientAdapter;
 import java.util.List;
@@ -58,12 +58,19 @@ public class OrderServiceImpl implements OrderService {
 
     UUID orderId = UUID.randomUUID();
 
-    if (!hubClientAdapter
-        .decreaseStockIfAvailable(orderId, productInfo.getProductId(), productInfo.getQuantity())
-        .success()) {
-      throw new StockShortageException();
-    }
+    //    if (!hubClientAdapter
+    //            .decreaseStockIfAvailable(orderId, productInfo.getProductId(),
+    // productInfo.getQuantity())
+    //            .success()) {
+    //      throw new StockShortageException();
+    //    }
 
+    HubStockDecreaseResponse response =
+        hubClientAdapter.decreaseStockIfAvailable(
+            orderId, productInfo.getProductId(), productInfo.getQuantity());
+    System.out.println(response.success());
+    System.out.println(response.data());
+    System.out.println(response.error());
     DeliveryCreateResponse deliveryCreateResponse =
         deliveryClientAdapter.createDelivery(
             orderId, requestVendor.getHubId(), receiverVendor.getVendorId());
