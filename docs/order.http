@@ -35,7 +35,7 @@ X-Vendor-Id: {{vendorId}}
 
 GET {{baseUrl}}/api/v1/orders/6a9ac0ef-7c43-4cb2-bec2-23fdf49ed3d9
 X-User-Id: {{userId}}
-X-User-Role: MASTER
+X-Role: MASTER
 X-Hub-Id: {{hubId}}
 X-Vendor-Id: {{vendorId}}
 
@@ -43,7 +43,7 @@ X-Vendor-Id: {{vendorId}}
 
 GET {{baseUrl}}/api/v1/orders?cursor=null&size=10
 X-User-Id: {{userId}}
-X-User-Role: MASTER
+X-Role: MASTER
 X-Hub-Id: {{hubId}}
 X-Vendor-Id: {{vendorId}}
 
@@ -51,7 +51,7 @@ X-Vendor-Id: {{vendorId}}
 
 GET {{baseUrl}}/api/v1/orders?cursor=2024-01-01T00:00:00&size=10&requestVendorId={{vendorId}}&status=CREATED
 X-User-Id: {{userId}}
-X-User-Role: MASTER
+X-Role: MASTER
 X-Hub-Id: {{hubId}}
 X-Vendor-Id: {{vendorId}}
 
@@ -59,7 +59,7 @@ X-Vendor-Id: {{vendorId}}
 PATCH {{baseUrl}}/api/v1/orders/6a9ac0ef-7c43-4cb2-bec2-23fdf49ed3d9
 Content-Type: application/json
 X-User-Id: {{userId}}
-X-User-Role: MASTER
+X-Role: MASTER
 X-Hub-Id: {{hubId}}
 X-Vendor-Id: {{vendorId}}
 
@@ -71,13 +71,13 @@ X-Vendor-Id: {{vendorId}}
 ### SOFT - DELETE
 DELETE {{baseUrl}}/api/v1/orders/{{orderId}}
 X-User-Id: {{userId}}
-X-User-Role: MASTER
+X-Role: MASTER
 X-Hub-Id: {{hubId}}
 X-Vendor-Id: {{vendorId}}
 
 ### CANCEL
 PATCH {{baseUrl}}/api/v1/orders/{{orderId}}/cancel
 X-User-Id: {{userId}}
-X-User-Role: VENDOR
+X-Role: MASTER
 X-Vendor-Id: {{vendorId}}
 X-Hub-Id: {{hubId}}
