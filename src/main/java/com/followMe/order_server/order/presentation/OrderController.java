@@ -35,9 +35,10 @@ public class OrderController {
   @ModelAttribute
   public UserContext userContext(
       @RequestHeader("X-User-Id") UUID userId,
-      @RequestHeader("X-User-Role") UserRole role,
+      @RequestHeader("X-Role") String userRole,
       @RequestHeader(value = "X-Hub-Id", required = false) UUID hubId,
       @RequestHeader(value = "X-Vendor-Id", required = false) UUID vendorId) {
+    UserRole role = UserRole.valueOf(userRole);
     return new UserContext(userId, role, hubId, vendorId);
   }
 
@@ -58,7 +59,6 @@ public class OrderController {
       CursorRequest cursorRequest,
       @ModelAttribute OrderSearchCondition condition,
       @ModelAttribute UserContext userContext) {
-    // TODO: 인증/인가에 따라 UserContext 변경 가능
     CursorResponse<OrderResponse> response =
         orderService.search(cursorRequest, condition, userContext);
     return ApiResponse.ok(response);
@@ -66,9 +66,10 @@ public class OrderController {
 
   @PatchMapping("/{orderId}")
   public ResponseEntity<ApiResponse> update(
-      @PathVariable UUID orderId, @RequestBody OrderUpdateRequest updateRequest) {
-    // TODO: 인증인가 필요
-    orderService.update(orderId, updateRequest);
+      @PathVariable UUID orderId,
+      @RequestBody OrderUpdateRequest updateRequest,
+      @ModelAttribute UserContext userContext) {
+    orderService.update(orderId, updateRequest, userContext);
     return ApiResponse.ok();
   }
 
@@ -80,17 +81,16 @@ public class OrderController {
   }
 
   @DeleteMapping("/{orderId}")
-  public ResponseEntity<ApiResponse> delete(@PathVariable UUID orderId) {
-    // TODO: 인증인가 필요
-    orderService.softDeleteById(orderId);
+  public ResponseEntity<ApiResponse> delete(
+      @PathVariable UUID orderId, @ModelAttribute UserContext userContext) {
+    orderService.softDeleteById(orderId, userContext);
     return ApiResponse.ok();
   }
 
   @PatchMapping("/{orderId}/cancel")
   public ResponseEntity<ApiResponse> cancel(
       @PathVariable UUID orderId, @ModelAttribute UserContext userContext) {
-    // TODO: 인증인가 필요
-    orderService.cancel(orderId, userContext.userId());
+    orderService.cancel(orderId, userContext);
     return ApiResponse.ok();
   }
 }
