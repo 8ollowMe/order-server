@@ -19,14 +19,14 @@ public interface OrderService {
   CursorResponse<OrderResponse> search(
       CursorRequest cursorRequest, OrderSearchCondition condition, UserContext userContext);
 
-  void update(UUID orderId, OrderUpdateRequest updateRequest);
+  void update(UUID orderId, OrderUpdateRequest updateRequest, UserContext userContext);
 
   void updateStatus(UUID orderId, OrderUpdateStateRequest updateStateRequest);
 
-  void softDeleteById(UUID orderId);
+  void softDeleteById(UUID orderId, UserContext userContext);
 
   void updateDeliveryManager(
       UUID orderId, OrderUpdateDeliveryManagerRequest updateDeliveryManagerRequest);
 
-  void cancel(UUID orderId, UUID uuid);
+  void cancel(UUID orderId, UserContext userContext);
 }

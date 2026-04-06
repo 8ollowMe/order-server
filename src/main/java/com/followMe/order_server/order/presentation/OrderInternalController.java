@@ -8,7 +8,6 @@ import com.followMe.order_server.order.application.dto.response.OrderResponse;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,12 +32,6 @@ public class OrderInternalController {
   public ResponseEntity<ApiResponse> updateStatus(
       @PathVariable UUID orderId, @RequestBody OrderUpdateStateRequest updateStateRequest) {
     orderService.updateStatus(orderId, updateStateRequest);
-    return ApiResponse.ok();
-  }
-
-  @DeleteMapping("/{orderId}")
-  public ResponseEntity<ApiResponse> delete(@PathVariable UUID orderId) {
-    orderService.softDeleteById(orderId);
     return ApiResponse.ok();
   }
 
