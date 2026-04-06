@@ -129,7 +129,7 @@ public class Order extends BaseAudit2 {
     }
   }
 
-  private boolean isCancelable(OrderState status) {
+  public boolean isCancelable(OrderState status) {
     return status == OrderState.CREATED;
   }
 

@@ -14,6 +14,7 @@ import com.followMe.order_server.order.domain.OrderState;
 import com.followMe.order_server.order.domain.ProductInfo;
 import com.followMe.order_server.order.domain.VendorInfo;
 import com.followMe.order_server.order.domain.repository.OrderRepository;
+import com.followMe.order_server.order.domain.service.OrderPermissionChecker;
 import com.followMe.order_server.order.infrastructure.client.delivery.DeliveryClientAdapter;
 import com.followMe.order_server.order.infrastructure.client.delivery.dto.response.DeliveryCreateResponse;
 import com.followMe.order_server.order.infrastructure.client.hub.HubClientAdapter;
@@ -34,6 +35,7 @@ public class OrderServiceImpl implements OrderService {
   private final HubClientAdapter hubClientAdapter;
   private final DeliveryClientAdapter deliveryClientAdapter;
   private final SlackClientAdapter slackClientAdapter;
+  private final OrderPermissionChecker orderPermissionChecker;
 
   @Override
   @Transactional
@@ -126,9 +128,9 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   @Transactional
-  public void update(UUID orderId, OrderUpdateRequest updateRequest) {
+  public void update(UUID orderId, OrderUpdateRequest updateRequest, UserContext userContext) {
     Order order = orderRepository.findById(orderId);
-
+    orderPermissionChecker.checkUpdatePermission(userContext, order);
     if (updateRequest.requestNote() != null) {
       order.updateRequestNote(updateRequest.requestNote());
     }
@@ -150,8 +152,9 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   @Transactional
-  public void softDeleteById(UUID orderId) {
+  public void softDeleteById(UUID orderId, UserContext userContext) {
     Order order = orderRepository.findById(orderId);
+    orderPermissionChecker.checkDeletePermission(userContext, order);
     order.softDelete(orderId);
   }
 
@@ -165,9 +168,10 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   @Transactional
-  public void cancel(UUID orderId, UUID userId) {
+  public void cancel(UUID orderId, UserContext userContext) {
     Order order = orderRepository.findById(orderId);
-    order.cancel(userId);
+    orderPermissionChecker.checkCancelPermission(userContext, order);
+    order.cancel(userContext.userId());
     hubClientAdapter.rollbackStock(
         orderId, order.getProductInfo().getProductId(), order.getProductInfo().getQuantity());
     deliveryClientAdapter.cancelDelivery(order.getDeliveryId());
