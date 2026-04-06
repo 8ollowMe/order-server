@@ -14,12 +14,12 @@ X-Hub-Id: {{hubId}}
 X-Vendor-Id: {{vendorId}}
 
 {
-  "productId": "aaaaaaaa-0000-0000-0000-000000000001",
-  "productName": "축구공",
+  "productId": "44ef6a7b-8c9d-4012-a345-67890abcdef1",
+  "productName": "유기농 우유",
 
-  "requestVendorId": "bbbbbbbb-0000-0000-0000-000000000001",
-  "requestVendorName": "요청업체A",
-  "requestVendorHubId": "dddddddd-0000-0000-0000-000000000001",
+  "requestVendorId": "44d6507c-9b8e-4a6c-9f8d-4e92b3a1a004",
+  "requestVendorName": "마켓컬리 신선센터",
+  "requestVendorHubId": "d4e5f6a7-b8c9-0123-4567-890abcdef123",
   "requestVendorHubName": "요청허브A",
 
   "receiverVendorId": "cccccccc-0000-0000-0000-000000000001",
@@ -27,7 +27,7 @@ X-Vendor-Id: {{vendorId}}
   "receiverVendorHubId": "eeeeeeee-0000-0000-0000-000000000001",
   "receiverVendorHubName": "수령허브B",
 
-  "quantity": 10,
+  "quantity": 1,
   "requestNote": "빠른 배송 부탁드립니다"
 }
 
