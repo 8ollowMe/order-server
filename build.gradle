@@ -61,6 +61,8 @@ dependencies {
 
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.16'
 //
 //	implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 //// Additional Logback appenders
