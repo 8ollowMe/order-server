@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
     name = "hub-server",
-    url = "http://localhost:8087",
     configuration = {FeignOkHttpConfiguration.class, FeignConfig.class},
     fallbackFactory = HubFeignClientFallbackFactory.class)
 public interface HubFeignClient {
