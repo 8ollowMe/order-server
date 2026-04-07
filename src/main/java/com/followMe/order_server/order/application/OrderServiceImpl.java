@@ -65,7 +65,10 @@ public class OrderServiceImpl implements OrderService {
     try {
       DeliveryCreateResponse deliveryCreateResponse =
           deliveryClientAdapter.createDelivery(
-              orderId, resourceVendor.getHubId(), receiverVendor.getVendorId());
+              orderId,
+              resourceVendor.getHubId(),
+              receiverVendor.getVendorId(),
+              request.recipientId());
 
       Order order =
           Order.ofCreate(
@@ -75,7 +78,8 @@ public class OrderServiceImpl implements OrderService {
               productInfo,
               resourceVendor,
               receiverVendor,
-              request.requestNote());
+              request.requestNote(),
+              request.recipientId());
 
       orderRepository.save(order);
 

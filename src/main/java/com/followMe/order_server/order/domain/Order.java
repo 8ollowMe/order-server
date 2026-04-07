@@ -70,6 +70,9 @@ public class Order extends BaseAudit2 {
   @Column(name = "cancelled_by")
   private UUID cancelledBy;
 
+  @Column(name = "recipient_id")
+  private UUID recipientId;
+
   @Builder
   private Order(
       UUID orderId,
@@ -79,6 +82,7 @@ public class Order extends BaseAudit2 {
       VendorInfo resourceVendor,
       VendorInfo receiverVendor,
       String requestNote,
+      UUID recipientId,
       OrderState status) {
 
     this.orderId = orderId;
@@ -88,6 +92,7 @@ public class Order extends BaseAudit2 {
     this.resourceVendor = resourceVendor;
     this.receiverVendor = receiverVendor;
     this.requestNote = requestNote;
+    this.recipientId = recipientId;
     this.status = status;
   }
 
@@ -98,7 +103,8 @@ public class Order extends BaseAudit2 {
       ProductInfo productInfo,
       VendorInfo requestVendor,
       VendorInfo receiverVendor,
-      String requestNote) {
+      String requestNote,
+      UUID recipientId) {
 
     return Order.builder()
         .orderId(orderId)
@@ -108,6 +114,7 @@ public class Order extends BaseAudit2 {
         .resourceVendor(requestVendor)
         .receiverVendor(receiverVendor)
         .requestNote(requestNote)
+        .recipientId(recipientId)
         .status(OrderState.CREATED)
         .build();
   }

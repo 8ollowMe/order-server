@@ -18,7 +18,8 @@ public record OrderResponse(
     String requestNote,
     OrderState status,
     LocalDateTime cancelledAt,
-    UUID cancelledBy) {
+    UUID cancelledBy,
+    UUID recipientId) {
   public static OrderResponse from(Order order) {
     return new OrderResponse(
         order.getOrderId(),
@@ -33,6 +34,7 @@ public record OrderResponse(
         order.getRequestNote(),
         order.getStatus(),
         order.getCancelledAt(),
-        order.getCancelledBy());
+        order.getCancelledBy(),
+        order.getRecipientId());
   }
 }
