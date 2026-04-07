@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
     name = "delivery-server",
+    url = "http://localhost:8081",
     configuration = {FeignOkHttpConfiguration.class, FeignConfig.class},
     fallbackFactory = DeliveryFeignClientFallbackFactory.class)
 public interface DeliveryFeignClient {

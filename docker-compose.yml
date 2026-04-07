@@ -22,6 +22,13 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  # 필요 시 구동
+#  zipkin:
+#    image: openzipkin/zipkin:latest
+#    container_name: zipkin-server
+#    restart: unless-stopped
+#    ports:
+#      - '9411:9411'
 
 volumes:
   postgres-data:
