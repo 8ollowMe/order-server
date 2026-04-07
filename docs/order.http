@@ -9,7 +9,7 @@
 POST {{baseUrl}}/api/v1/orders
 Content-Type: application/json
 X-User-Id: {{userId}}
-X-User-Role: MASTER
+X-Role: MASTER
 X-Hub-Id: {{hubId}}
 X-Vendor-Id: {{vendorId}}
 
