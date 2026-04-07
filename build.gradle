@@ -85,6 +85,8 @@ dependencies {
 //
 //	// Fluency for Fluentd (optional)
 //	implementation 'org.komamitsu:fluency-fluentd:2.4.1'
+
+	implementation 'org.springframework.kafka:spring-kafka'
 }
 
 dependencyManagement {
