@@ -32,11 +32,6 @@ public class FeignConfig {
     };
   }
 
-  /**
-   * @param request 받았던 요청
-   * @param requestTemplate 보낼 요청
-   * @param headerName 헤더 이름
-   */
   private void copyHeader(
       HttpServletRequest request, feign.RequestTemplate requestTemplate, String headerName) {
     String value = request.getHeader(headerName);

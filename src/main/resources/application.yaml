@@ -45,12 +45,35 @@ feign:
 resilience4j:
   circuitbreaker:
     instances:
-      hub-service:
+      hub-server:
         failure-rate-threshold: 50          # 회로 차단 기준
         minimum-number-of-calls: 5          # 최소 통계 횟수
         sliding-window-size: 10             # 최근 호출 기준 개수
         wait-duration-in-open-state: 10s    # 차단 후 복구 시도까지 대기 시간
         permitted-number-of-calls-in-half-open-state: 3  # 복구 시도 시 허용되는 호출 수
+      delivery-server:
+        failure-rate-threshold: 50          # 회로 차단 기준
+        minimum-number-of-calls: 5          # 최소 통계 횟수
+        sliding-window-size: 10             # 최근 호출 기준 개수
+        wait-duration-in-open-state: 10s    # 차단 후 복구 시도까지 대기 시간
+        permitted-number-of-calls-in-half-open-state: 3  # 복구 시도 시 허용되는 호출 수
+      message-server:
+        failure-rate-threshold: 50          # 회로 차단 기준
+        minimum-number-of-calls: 5          # 최소 통계 횟수
+        sliding-window-size: 10             # 최근 호출 기준 개수
+        wait-duration-in-open-state: 10s    # 차단 후 복구 시도까지 대기 시간
+        permitted-number-of-calls-in-half-open-state: 3  # 복구 시도 시 허용되는 호출 수
+  retry:
+    instances:
+      hub-server:
+        max-attempts: 3
+        wait-duration: 500ms
+      delivery-server:
+        max-attempts: 3
+        wait-duration: 500ms
+      message-server:
+        max-attempts: 3
+        wait-duration: 500ms
 
 springdoc:
   api-docs:
