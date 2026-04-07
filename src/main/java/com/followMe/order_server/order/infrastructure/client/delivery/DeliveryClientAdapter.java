@@ -13,9 +13,9 @@ public class DeliveryClientAdapter {
   private final DeliveryFeignClient deliveryFeignClient;
 
   public DeliveryCreateResponse createDelivery(
-      UUID orderId, UUID sourceHubId, UUID receiverVendorId) {
+      UUID orderId, UUID sourceHubId, UUID receiverVendorId, UUID recipientId) {
     DeliveryCreateRequest createRequest =
-        DeliveryCreateRequest.of(orderId, sourceHubId, receiverVendorId);
+        DeliveryCreateRequest.of(orderId, sourceHubId, receiverVendorId, recipientId);
     return deliveryFeignClient.createDelivery(createRequest);
   }
 

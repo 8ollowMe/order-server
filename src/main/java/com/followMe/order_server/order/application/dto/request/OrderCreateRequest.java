@@ -14,4 +14,5 @@ public record OrderCreateRequest(
     UUID receiverVendorHubId,
     String receiverVendorHubName,
     int quantity,
-    String requestNote) {}
+    String requestNote,
+    UUID recipientId) {}
