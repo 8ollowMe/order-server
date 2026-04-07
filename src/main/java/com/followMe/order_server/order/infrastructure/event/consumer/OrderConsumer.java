@@ -17,19 +17,23 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class OrderConsumer {
 
-    private final InboxRepository inboxRepository;
-    private OrderService orderService;
+  private final InboxRepository inboxRepository;
+  private OrderService orderService;
 
-    @Transactional
-    @KafkaListener(topics = "DeliveryCompleted", groupId = "delivery-service")
-    public void consume(DeliveryCompleted event) {
-        if (inboxRepository.existsById(UUID.fromString(event.getEventId()))) {
-            return;
-        }
-        orderService.updateStatus(((Payload) event.getPayload()).orderId(),
-                new OrderUpdateStateRequest(OrderState.COMPLETED.name()));
-
-        inboxRepository.save(
-                Inbox.builder().id(UUID.fromString(event.getEventId())).messageGroup("DeliveryCompleted").build());
+  @Transactional
+  @KafkaListener(topics = "DeliveryCompleted", groupId = "delivery-service")
+  public void consume(DeliveryCompleted event) {
+    if (inboxRepository.existsById(UUID.fromString(event.getEventId()))) {
+      return;
     }
+    orderService.updateStatus(
+        ((Payload) event.getPayload()).orderId(),
+        new OrderUpdateStateRequest(OrderState.COMPLETED.name()));
+
+    inboxRepository.save(
+        Inbox.builder()
+            .id(UUID.fromString(event.getEventId()))
+            .messageGroup("DeliveryCompleted")
+            .build());
+  }
 }
