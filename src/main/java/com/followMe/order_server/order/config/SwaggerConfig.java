@@ -11,7 +11,6 @@ public class SwaggerConfig {
   @Bean
   public OpenAPI openAPI() {
     return new OpenAPI()
-        .info(
-            new Info().title("Order Server API").version("v1").description("주문 서비스 API 문서"));
+        .info(new Info().title("Order Server API").version("v1").description("주문 서비스 API 문서"));
   }
 }
