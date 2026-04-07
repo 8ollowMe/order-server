@@ -1,4 +1,4 @@
-package com.followMe.order_server.order.infrastructure.client.repository;
+package com.followMe.order_server.order.infrastructure.repository;
 
 import com.followMe.order_server.order.application.dto.request.OrderSearchCondition;
 import com.followMe.order_server.order.domain.Order;
@@ -58,7 +58,7 @@ public class OrderRepositoryAdapter implements OrderRepository {
     if (hubId == null) return null;
 
     QOrder order = QOrder.order;
-    return order.requestVendor.hubId.eq(hubId).or(order.receiverVendor.hubId.eq(hubId));
+    return order.resourceVendor.hubId.eq(hubId).or(order.receiverVendor.hubId.eq(hubId));
   }
 
   private BooleanExpression deliveryManagerEa(UUID deliveryManagerId) {
@@ -100,7 +100,11 @@ public class OrderRepositoryAdapter implements OrderRepository {
     if (vendorId == null) return null;
 
     QOrder order = QOrder.order;
-    return order.requestVendor.vendorId.eq(vendorId).or(order.receiverVendor.vendorId.eq(vendorId));
+    return order
+        .resourceVendor
+        .vendorId
+        .eq(vendorId)
+        .or(order.receiverVendor.vendorId.eq(vendorId));
   }
 
   private BooleanExpression statusEq(OrderState status) {

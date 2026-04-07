@@ -4,6 +4,7 @@ import com.followMe.order_server.order.config.FeignConfig;
 import com.followMe.order_server.order.config.FeignOkHttpConfiguration;
 import com.followMe.order_server.order.infrastructure.client.delivery.dto.request.DeliveryCreateRequest;
 import com.followMe.order_server.order.infrastructure.client.delivery.dto.response.DeliveryCreateResponse;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.util.UUID;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+@CircuitBreaker(name = "delivery-server")
 @FeignClient(
     name = "delivery-server",
     url = "http://localhost:8081",

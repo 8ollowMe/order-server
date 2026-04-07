@@ -44,7 +44,7 @@ public class MessageConstructor {
         order.getReceiverVendor().getVendorName(),
         order.getCreatedAt(),
         order.getProductInfo().getProductName(),
-        order.getRequestVendor().getHubName(),
+        order.getResourceVendor().getHubName(),
         waypointsContent,
         order.getReceiverVendor().getHubName(),
         deliveryManagerName,
