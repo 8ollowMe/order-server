@@ -18,7 +18,6 @@ import com.followMe.order_server.order.domain.service.OrderPermissionChecker;
 import com.followMe.order_server.order.infrastructure.client.delivery.DeliveryClientAdapter;
 import com.followMe.order_server.order.infrastructure.client.delivery.dto.response.DeliveryCreateResponse;
 import com.followMe.order_server.order.infrastructure.client.hub.HubClientAdapter;
-import com.followMe.order_server.order.infrastructure.client.hub.dto.response.HubStockDecreaseResponse;
 import com.followMe.order_server.order.infrastructure.client.slack.MessageConstructor;
 import com.followMe.order_server.order.infrastructure.client.slack.SlackClientAdapter;
 import java.util.List;
@@ -44,12 +43,12 @@ public class OrderServiceImpl implements OrderService {
     ProductInfo productInfo =
         new ProductInfo(request.productId(), request.productName(), request.quantity());
 
-    VendorInfo requestVendor =
+    VendorInfo resourceVendor =
         new VendorInfo(
-            request.requestVendorId(),
-            request.requestVendorName(),
-            request.requestVendorHubId(),
-            request.requestVendorHubName());
+            request.resourceVendorId(),
+            request.resourceVendorName(),
+            request.resourceVendorHubId(),
+            request.resourceVendorHubName());
 
     VendorInfo receiverVendor =
         new VendorInfo(
@@ -60,35 +59,32 @@ public class OrderServiceImpl implements OrderService {
 
     UUID orderId = UUID.randomUUID();
 
-    //    if (!hubClientAdapter
-    //            .decreaseStockIfAvailable(orderId, productInfo.getProductId(),
-    // productInfo.getQuantity())
-    //            .success()) {
-    //      throw new StockShortageException();
-    //    }
+    hubClientAdapter.decreaseStockIfAvailable(
+        orderId, productInfo.getProductId(), productInfo.getQuantity());
 
-    HubStockDecreaseResponse response =
-        hubClientAdapter.decreaseStockIfAvailable(
-            orderId, productInfo.getProductId(), productInfo.getQuantity());
-    System.out.println(response.success());
-    System.out.println(response.data());
-    System.out.println(response.error());
-    DeliveryCreateResponse deliveryCreateResponse =
-        deliveryClientAdapter.createDelivery(
-            orderId, requestVendor.getHubId(), receiverVendor.getVendorId());
-    Order order =
-        Order.ofCreate(
-            orderId,
-            deliveryCreateResponse.deliveryId(),
-            deliveryCreateResponse.deliveryManagerId(),
-            productInfo,
-            requestVendor,
-            receiverVendor,
-            request.requestNote());
+    try {
+      DeliveryCreateResponse deliveryCreateResponse =
+          deliveryClientAdapter.createDelivery(
+              orderId, resourceVendor.getHubId(), receiverVendor.getVendorId());
 
-    orderRepository.save(order);
+      Order order =
+          Order.ofCreate(
+              orderId,
+              deliveryCreateResponse.deliveryId(),
+              deliveryCreateResponse.deliveryManagerId(),
+              productInfo,
+              resourceVendor,
+              receiverVendor,
+              request.requestNote());
 
-    sendSlack(order, deliveryCreateResponse);
+      orderRepository.save(order);
+
+      sendSlack(order, deliveryCreateResponse);
+    } catch (Exception e) {
+      hubClientAdapter.rollbackStock(
+          orderId, productInfo.getProductId(), productInfo.getQuantity());
+      throw new RuntimeException(e);
+    }
   }
 
   private void sendSlack(Order order, DeliveryCreateResponse deliveryCreateResponse) {
