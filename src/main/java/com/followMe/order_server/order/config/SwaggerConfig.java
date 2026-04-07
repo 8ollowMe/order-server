@@ -12,6 +12,6 @@ public class SwaggerConfig {
   public OpenAPI openAPI() {
     return new OpenAPI()
         .info(
-            new Info().title("Delivery Service API").version("v1").description("배송 서비스 API 기본 문서"));
+            new Info().title("Order Server API").version("v1").description("주문 서비스 API 문서"));
   }
 }
