@@ -23,9 +23,8 @@ public class OrderInternalController {
 
   @Operation(summary = "주문 조회(내부용)", description = "주문 ID로 주문 정보를 조회합니다. 내부 API 전용")
   @GetMapping("/{orderId}")
-  public OrderResponse readById(
-      @Parameter(description = "조회할 주문 ID") @PathVariable UUID orderId) {
-      return orderService.readById(orderId);
+  public OrderResponse readById(@Parameter(description = "조회할 주문 ID") @PathVariable UUID orderId) {
+    return orderService.readById(orderId);
   }
 
   @Operation(summary = "주문 상태 변경(내부용)", description = "주문 상태를 변경합니다. 내부 API 전용")
