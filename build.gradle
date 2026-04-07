@@ -63,6 +63,15 @@ dependencies {
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.16'
+
+	// 모니터링 및 메트릭 수집 (필수)
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	// 분산 추적 - Micrometer Tracing (Brave 브릿지 사용)
+	implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+
+	// Zipkin으로 트레이스 데이터를 전송하는 리포터
+	implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
 //
 //	implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 //// Additional Logback appenders
