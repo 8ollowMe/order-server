@@ -32,7 +32,7 @@ public class OrderPermissionCheckerImpl implements OrderPermissionChecker {
       }
       case HUB_MANAGER -> {
         if (userContext.hubId() == order.getReceiverVendor().getHubId()
-            || userContext.hubId() == order.getRequestVendor().getHubId()) {
+            || userContext.hubId() == order.getResourceVendor().getHubId()) {
 
         } else {
           throw new BusinessException((CommonErrorCode.FORBIDDEN));

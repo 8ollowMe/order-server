@@ -41,12 +41,12 @@ public class Order extends BaseAudit2 {
 
   @Embedded
   @AttributeOverrides({
-    @AttributeOverride(name = "vendorId", column = @Column(name = "request_vendor_id")),
-    @AttributeOverride(name = "vendorName", column = @Column(name = "request_vendor_name")),
-    @AttributeOverride(name = "hubId", column = @Column(name = "request_vendor_hub_id")),
-    @AttributeOverride(name = "hubName", column = @Column(name = "request_vendor_hub_name"))
+    @AttributeOverride(name = "vendorId", column = @Column(name = "resource_vendor_id")),
+    @AttributeOverride(name = "vendorName", column = @Column(name = "resource_vendor_name")),
+    @AttributeOverride(name = "hubId", column = @Column(name = "resource_vendor_hub_id")),
+    @AttributeOverride(name = "hubName", column = @Column(name = "resource_vendor_hub_name"))
   })
-  private VendorInfo requestVendor;
+  private VendorInfo resourceVendor;
 
   @Embedded
   @AttributeOverrides({
@@ -76,7 +76,7 @@ public class Order extends BaseAudit2 {
       UUID deliveryId,
       UUID currentDeliveryManagerId,
       ProductInfo productInfo,
-      VendorInfo requestVendor,
+      VendorInfo resourceVendor,
       VendorInfo receiverVendor,
       String requestNote,
       OrderState status) {
@@ -85,7 +85,7 @@ public class Order extends BaseAudit2 {
     this.deliveryId = deliveryId;
     this.currentDeliveryManagerId = currentDeliveryManagerId;
     this.productInfo = productInfo;
-    this.requestVendor = requestVendor;
+    this.resourceVendor = resourceVendor;
     this.receiverVendor = receiverVendor;
     this.requestNote = requestNote;
     this.status = status;
@@ -105,7 +105,7 @@ public class Order extends BaseAudit2 {
         .deliveryId(deliveryId)
         .currentDeliveryManagerId(currentDeliveryManagerId)
         .productInfo(productInfo)
-        .requestVendor(requestVendor)
+        .resourceVendor(requestVendor)
         .receiverVendor(receiverVendor)
         .requestNote(requestNote)
         .status(OrderState.CREATED)
