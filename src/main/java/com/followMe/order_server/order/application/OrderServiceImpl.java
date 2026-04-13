@@ -9,6 +9,7 @@ import com.followMe.order_server.order.application.dto.request.OrderUpdateReques
 import com.followMe.order_server.order.application.dto.request.OrderUpdateStateRequest;
 import com.followMe.order_server.order.application.dto.request.UserContext;
 import com.followMe.order_server.order.application.dto.response.OrderResponse;
+import com.followMe.order_server.order.application.policy.OrderSearchPolicy;
 import com.followMe.order_server.order.domain.Order;
 import com.followMe.order_server.order.domain.OrderState;
 import com.followMe.order_server.order.domain.ProductInfo;
@@ -35,6 +36,7 @@ public class OrderServiceImpl implements OrderService {
   private final DeliveryClientAdapter deliveryClientAdapter;
   private final SlackClientAdapter slackClientAdapter;
   private final OrderPermissionChecker orderPermissionChecker;
+  private final List<OrderSearchPolicy> orderSearchPolicies;
 
   @Override
   @Transactional
@@ -112,8 +114,13 @@ public class OrderServiceImpl implements OrderService {
   @Transactional(readOnly = true)
   public CursorResponse<OrderResponse> search(
       CursorRequest cursorRequest, OrderSearchCondition condition, UserContext userContext) {
-    OrderSearchCondition filteredCondition =
-        OrderSearchFilter.applyRoleFilter(condition, userContext);
+    OrderSearchPolicy orderSearchPolicy =
+        orderSearchPolicies.stream()
+            .filter(it -> it.isSupport(userContext.userRole()))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("권한에 해당하는 요청을 처리할 수 없다는 비즈니스 예외"));
+
+    OrderSearchCondition filteredCondition = orderSearchPolicy.execute(condition, userContext);
 
     List<Order> orders =
         orderRepository.searchByCursor(
